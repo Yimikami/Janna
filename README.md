@@ -11,7 +11,7 @@ Janna is a Discord bot designed to fetch League of Legends summoner rank informa
 ## Installation
 1. Clone the repository:
    ```
-   git clone https://github.com/Yimikami/Janna-bot
+   git clone https://github.com/Yimikami/Janna
    ```
 2. Install dependencies:
    ```
