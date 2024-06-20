@@ -1,29 +1,17 @@
 import os
 from dotenv import load_dotenv
+
 import aiohttp
 import discord
 from discord import app_commands, Embed
+
+import mapping
 
 load_dotenv()
 
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
-
-region_mapping = {
-    "euw": "euw1",
-    "eune": "eun1",
-    "na": "na1",
-    "kr": "kr",
-    "jp": "jp1",
-    "br": "br1",
-    "lan": "la1",
-    "las": "la2",
-    "oce": "oc1",
-    "tr": "tr1",
-    "ru": "ru",
-    "pbe": "pbe1",
-}
 
 
 class Summoner:
@@ -119,7 +107,7 @@ async def profile(interaction, gamename: str, region: str):
     tagline = gamename.split("#")[1]
     gamename = gamename.split("#")[0]
     region = region.lower()
-    region = region_mapping.get(region, "euw1")
+    region = mapping.region_mapping.get(region, "euw1")
 
     summoner = await getSummoner.get_summoner_by_riot_id(gamename, tagline)
     if "status" in summoner:
@@ -169,7 +157,7 @@ async def livegame(interaction, gamename: str, region: str):
     tagline = gamename.split("#")[1]
     gamename = gamename.split("#")[0]
     region = region.lower()
-    region = region_mapping.get(region, "euw1")
+    region = mapping.region_mapping.get(region, "euw1")
 
     summoner = await getSummoner.get_summoner_by_riot_id(gamename, tagline)
     if "status" in summoner:
@@ -193,19 +181,20 @@ async def livegame(interaction, gamename: str, region: str):
             blue_team.append(player)
         else:
             red_team.append(player)
-
+    gameQueue = live_game["gameQueueConfigId"]
+    gameQueue = mapping.queue_mapping.get(gameQueue, "Unknown")
     embed = Embed(
         title=f"{gamename}#{tagline}'s Live Game",
-        description=f"Gamemode: {live_game['gameMode']}\nGame Length: {round((live_game['gameLength'] / 60))} minutes",
+        description=f"Gamemode: {gameQueue}\nGame Time: {round((live_game['gameLength'] / 60))} minutes",
         color=0x5CDBF0,
     )
     blue_team_string = ""
     red_team_string = ""
     line_string = ""
     for player in blue_team:
-        blue_team_string += f"{player['riotId']} - {await getSummoner.findChampionName(player['championId'])}\n"
+        blue_team_string += f"{mapping.emoji_mapping.get(str(player['championId']))}{await getSummoner.findChampionName(player['championId'])} - {player['riotId']}\n"
     for player in red_team:
-        red_team_string += f"{await getSummoner.findChampionName(player['championId'])} - {player['riotId']}\n"
+        red_team_string += f"{mapping.emoji_mapping.get(str(player['championId']))}{await getSummoner.findChampionName(player['championId'])} - {player['riotId']}\n"
     embed.add_field(name="Blue Team", value=blue_team_string, inline=True)
     for _ in range(5):
         line_string += "|\n"
@@ -214,9 +203,11 @@ async def livegame(interaction, gamename: str, region: str):
     
     await interaction.response.send_message(embed=embed)
 
+
+
 @client.event
 async def on_ready():
-    await tree.sync(guild=None)
+    await tree.sync(guild=discord.Object(id=os.getenv("GUILD_ID")))
     print(f"{client.user.name} has connected to Discord!")
 
 client.run(os.getenv("DISCORD_TOKEN"))
