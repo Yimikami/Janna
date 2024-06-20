@@ -93,6 +93,10 @@ class RiotAPI:
         for champion in champions.values():
             if champion["key"] == str(championId):
                 return champion["name"]
+            
+    async def get_free_champion_rotation(self):
+        url = f"https://euw1.api.riotgames.com/lol/platform/v3/champion-rotations"
+        return await self.request(url)
 
 
 getSummoner = RiotAPI(os.getenv("RIOT_API_KEY"))
@@ -203,7 +207,25 @@ async def livegame(interaction, gamename: str, region: str):
     
     await interaction.response.send_message(embed=embed)
 
-
+@tree.command(name="rotation", description="Get the free champion rotation", guild=discord.Object(id=os.getenv("GUILD_ID")))
+async def rotation(interaction):
+    rotation = await getSummoner.get_free_champion_rotation()
+    free_champions = rotation["freeChampionIds"]
+    low_level_free_champions = rotation["freeChampionIdsForNewPlayers"]
+    free_champions_string = ""
+    low_level_free_champions_string = ""
+    for champion in free_champions:
+        free_champions_string += f"{mapping.emoji_mapping.get(str(champion))}{await getSummoner.findChampionName(champion)}\n"
+    for champion in low_level_free_champions:
+        low_level_free_champions_string += f"{mapping.emoji_mapping.get(str(champion))}{await getSummoner.findChampionName(champion)}\n"
+    embed = Embed(
+        title="Free Champion Rotation",
+        color=0x5CDBF0,
+    )
+    embed.add_field(name="Free Champions", value=free_champions_string, inline=True)
+    embed.add_field(name="Low Level Free Champions (1-10)", value=low_level_free_champions_string, inline=True)
+    
+    await interaction.response.send_message(embed=embed)
 
 @client.event
 async def on_ready():
