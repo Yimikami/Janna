@@ -7,6 +7,7 @@ Janna is a Discord bot designed to fetch League of Legends summoner rank informa
 - **Rank Command**: Fetches and displays the ranked information of a League of Legends summoner.
 - **Dynamic Region Handling**: Automatically maps region inputs to Riot API endpoints for various League of Legends regions.
 - **Live Game Support**: Fetches and displays the current game information of a summoner if they are in a live game.
+- **Free Champion Rotation**: Fetches and displays the current free champion rotation.
 - **Embed Display**: Utilizes Discord embeds to present summoner's rank information in an attractive format.
 
 ## Installation
@@ -33,8 +34,14 @@ Janna is a Discord bot designed to fetch League of Legends summoner rank informa
 - In Discord, use the `/rank` command followed by the summoner's game name, tagline, and region to fetch their rank information.
 
 ## Commands
-### `/rank gamename tagline region`
+### `/rank gamename region`
 - Fetches and displays the ranked information of the specified summoner in the given region.
+
+### `/livegame gamename region`
+- Fetches and displays the current game information of the specified summoner if they are in a live game.
+
+### `/rotation`
+- Fetches and displays the current free champion rotation.
 
 ## Dependencies
 - **Python Libraries**:
