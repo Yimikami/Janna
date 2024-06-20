@@ -1,7 +1,7 @@
 # Janna Discord Bot
 
 ## Description
-Janna is a Discord bot designed to fetch League of Legends summoner rank information using Riot Games API.
+Janna is a Discord bot designed to fetch League of Legends information using Riot Games API.
 
 ## Features
 - **Rank Command**: Fetches and displays the ranked information of a League of Legends summoner.
