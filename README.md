@@ -1,6 +1,7 @@
-### Description: 
 Made to fetch League of Legends, Janna is a Discord bot using Riot Games API.
+
 It consists of three major commands: 
+
 - **/livegame**: If the summoner is currently in a game, it returns the information about this game, including details of other summoners, mode of the game, and who plays what.
 - **/profile**: Details of summoner profile, rank, his summoner icon, and pre-migration summoner name.
 - **/rotate**: Shows this week's free champion rotation.
